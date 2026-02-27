@@ -1,10 +1,23 @@
 # ReedSolomonEx
 
+> **Note:** This is a fork of [ewildgoose/rs_protect](https://github.com/ewildgoose/rs_protect/)
+> with the intention to experiment with new approaches and extend platform support.
+
 ReedSolomonEx is an Elixir wrapper around the `reed-solomon` Rust crate using Rustler.
 It provides fast, pure-Rust Reed-Solomon encoding and decoding for binary data.
 Protection is implemented on a per byte basis and an ECC/Parity code will be generated
 of length N, which will protect and correct against up to N/2 errors or erasures in the
 source. This makes it useful for protecting short binaries against corruption in transmission
+
+## Differences from Upstream
+
+This fork diverges from the original with the following goals:
+
+- **Extended platform support** — Native builds for embedded targets including:
+  - `aarch64` (ARM64 embedded devices)
+  - `riscv64` (RISC-V platforms)
+- **Experimental features** — A playground for testing new approaches and optimizations
+- **Nerves-friendly** — Designed to work seamlessly with [Nerves](https://nerves-project.org/) embedded Elixir projects
 
 ## Features
 - Encode flat binary messages with added parity bytes
