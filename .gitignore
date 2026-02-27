@@ -34,3 +34,6 @@ devenv.lock
 
 # Direnv
 .envrc
+
+# Release checksums
+checksum-Elixir.ReedSolomonEx.exs
