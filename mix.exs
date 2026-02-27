@@ -62,10 +62,16 @@ defmodule ReedSolomonEx.MixProject do
   end
 
   defp native_files do
-    {out, 0} = System.cmd("git", ["ls-files", "native"])
+    case System.cmd("git", ["ls-files", "native"], stderr_to_stdout: true) do
+      {out, 0} ->
+        out
+        |> String.split("\n")
+        |> Enum.filter(&(&1 != ""))
 
-    out
-    |> String.split("\n")
-    |> Enum.filter(&(&1 != ""))
+      {_err, _exit_code} ->
+        # Not in a git repository (e.g., installed from Hex)
+        # Return empty list - native files are only needed for building from source
+        []
+    end
   end
 end
