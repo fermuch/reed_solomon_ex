@@ -1,4 +1,4 @@
-defmodule RSProtect do
+defmodule ReedSolomonEx do
   @moduledoc """
   Reed-Solomon encoder/decoder wrapper using Rust NIF.
 
@@ -8,12 +8,33 @@ defmodule RSProtect do
 
   ## Examples
 
-      iex> {:ok, codeword} = RSProtect.encode("hello", 4)
-      iex> {:ok, original} = RSProtect.correct(codeword, 4)
+      iex> {:ok, codeword} = ReedSolomonEx.encode("hello", 4)
+      iex> {:ok, original} = ReedSolomonEx.correct(codeword, 4)
       iex> original == "hello"
       true
   """
-  use Rustler, otp_app: :rs_protect, crate: "rs_protect_nif"
+  @version Mix.Project.config()[:version]
+
+  use RustlerPrecompiled,
+    otp_app: :reed_solomon_ex,
+    crate: "reed_solomon_ex",
+    base_url: "https://github.com/fermuch/reed_solomon_ex/releases/download/v#{@version}",
+    force_build: System.get_env("REED_SOLOMON_EX_FORCE_BUILD") in ["1", "true"],
+    version: @version,
+    nif_versions: ~w(2.15 2.17),
+    targets: ~w(
+      aarch64-apple-darwin
+      aarch64-unknown-linux-gnu
+      aarch64-unknown-linux-musl
+      arm-unknown-linux-gnueabihf
+      riscv64gc-unknown-linux-gnu
+      riscv64gc-unknown-linux-musl
+      x86_64-apple-darwin
+      x86_64-pc-windows-gnu
+      x86_64-pc-windows-msvc
+      x86_64-unknown-linux-gnu
+      x86_64-unknown-linux-musl
+    )
 
   @doc """
   Encodes a binary by appending N parity bytes for error correction.
