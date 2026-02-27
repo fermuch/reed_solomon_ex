@@ -1,12 +1,12 @@
-defmodule RSProtect.MixProject do
+defmodule ReedSolomonEx.MixProject do
   use Mix.Project
 
-  @source_url "https://github.com/ewildgoose/rs_protect"
-  @version "0.1.0"
+  @source_url "https://github.com/fermuch/reed_solomon_ex"
+  @version File.read!("VERSION") |> String.trim()
 
   def project do
     [
-      app: :rs_protect,
+      app: :reed_solomon_ex,
       description: description(),
       package: package(),
       version: @version,
@@ -22,35 +22,50 @@ defmodule RSProtect.MixProject do
     ]
   end
 
-  # Run "mix help compile.app" to learn about applications.
   def application do
     [
       extra_applications: [:logger]
     ]
   end
 
-  # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:rustler, "~> 0.29"},
+      {:rustler_precompiled, "~> 0.8"},
+      {:rustler, "~> 0.37", optional: true},
       {:ex_doc, "~> 0.30", only: :dev, runtime: false}
     ]
   end
 
   defp description do
     """
-    Elixir/rust wrapper around Reed-Solomon error correction code library.
+    Elixir/Rust wrapper around Reed-Solomon error correction code library.
     Suitable for protecting short binary packets against bit errors on noisy channels.
     """
   end
 
   defp package do
     %{
-      name: "rs_protect",
-      files: ["lib", "native", "mix.exs", "README.md", "LICENSE"],
-      maintainers: ["Ed Wildgoose"],
+      name: "reed_solomon_ex",
+      files:
+        [
+          "lib",
+          "mix.exs",
+          "README.md",
+          "LICENSE",
+          "VERSION",
+          "checksum-*.exs"
+        ] ++ native_files(),
+      maintainers: ["Fernando Mumbach"],
       licenses: ["Apache-2.0"],
       links: %{"GitHub" => @source_url}
     }
+  end
+
+  defp native_files do
+    {out, 0} = System.cmd("git", ["ls-files", "native"])
+
+    out
+    |> String.split("\n")
+    |> Enum.filter(&(&1 != ""))
   end
 end
