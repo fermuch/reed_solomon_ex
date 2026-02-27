@@ -75,8 +75,10 @@ defmodule ReedSolomonEx do
   @spec correct(binary(), non_neg_integer(), [byte()]) :: {:ok, binary()} | {:error, any()}
 
   @doc false
-  @spec correct_err_count(binary(), non_neg_integer()) :: {:ok, {binary(), non_neg_integer()}} | {:error, any()}
-  def correct_err_count(codeword, parity_bytes), do: correct_err_count(codeword, parity_bytes, nil)
+  @spec correct_err_count(binary(), non_neg_integer()) ::
+          {:ok, {binary(), non_neg_integer()}} | {:error, any()}
+  def correct_err_count(codeword, parity_bytes),
+    do: correct_err_count(codeword, parity_bytes, nil)
 
   @doc """
   Decode/Correct a binary codeword and attempts to correct up to N/2 errors.

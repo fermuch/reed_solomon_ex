@@ -25,10 +25,11 @@ defmodule ReedSolomonExTest do
     parity = 4
     {:ok, encoded} = ReedSolomonEx.encode(data, parity)
 
-    corrupted = encoded
-    |> :binary.bin_to_list()
-    |> Enum.map(fn byte -> Bitwise.bxor(byte, 0xFF) end)
-    |> :binary.list_to_bin()
+    corrupted =
+      encoded
+      |> :binary.bin_to_list()
+      |> Enum.map(fn byte -> Bitwise.bxor(byte, 0xFF) end)
+      |> :binary.list_to_bin()
 
     assert {:error, _} = ReedSolomonEx.correct(corrupted, parity, nil)
   end
@@ -78,5 +79,19 @@ defmodule ReedSolomonExTest do
     assert {:ok, {decoded, errs}} = ReedSolomonEx.correct_err_count(corrupted, parity, [0])
     assert decoded == data
     assert errs == 1
+  end
+
+  test "returns error when data + parity exceeds 255 bytes" do
+    # 256 bytes data + 4 parity = 260 bytes (exceeds 255 limit)
+    data = :binary.copy(<<0>>, 256)
+    assert {:error, msg} = ReedSolomonEx.encode(data, 4)
+    assert msg =~ "cannot exceed 255"
+  end
+
+  test "encode succeeds at maximum valid size" do
+    # 251 bytes data + 4 parity = 255 bytes (exactly at limit)
+    data = :binary.copy(<<0>>, 251)
+    assert {:ok, encoded} = ReedSolomonEx.encode(data, 4)
+    assert byte_size(encoded) == 255
   end
 end
