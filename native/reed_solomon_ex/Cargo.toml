@@ -21,3 +21,6 @@ nif_version_2_17 = ["rustler/nif_version_2_17"]
 
 [profile.release]
 lto = true
+# Lets LLVM inline the reed-solomon GF lookups into the NIF bodies;
+# measurable on slow in-order cores (e.g. RISC-V C906).
+codegen-units = 1
