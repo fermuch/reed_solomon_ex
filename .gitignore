@@ -32,8 +32,5 @@ native/reed_solomon_ex/target
 .devenv/
 devenv.lock
 
-# Direnv
-.envrc
-
 # Release checksums
 checksum-Elixir.ReedSolomonEx.exs
